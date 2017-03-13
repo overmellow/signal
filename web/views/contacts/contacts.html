@@ -1,0 +1,15 @@
+<div class="panel panel-default">
+  <div class="panel-heading">Contacts
+	  <a href="#/conversations" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-user"></span> My Conversations</a>
+  </div>
+
+	<ul class="list-group">
+		<li class="list-group-item" ng-repeat="contact in contacts">{{contact.email}} 
+			<button class="btn btn-default btn-xs pull-right" ng-click="addToMyContacts(contact)">Add to My Contacts
+				<span class="glyphicon glyphicon-plus"></span>
+			</button>
+		</li>
+		
+	</ul>
+
+</div>

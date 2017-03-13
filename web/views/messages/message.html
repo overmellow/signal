@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+  <div class="panel-heading">Message</div>
+
+  <ul class="list-group" style="min-height: 200px; max-height: 200px;
+  overflow-y: scroll;">
+	  <li class="list-group-item" ng-repeat="message in messages">{{message.message}}</li>	  
+	</ul>
+
+  <div class="panel-footer">
+		<form>
+		  <div class="input-group">
+	      <textarea  type="text" class="form-control" placeholder="	Message" ng-model="newMessage.message" rows="1" style="resize: none;"></textarea>
+	      <span class="input-group-btn">
+	        <button class="btn btn-default" type="button" ng-click="sendMessage(newMessage)">Send</button>
+	      </span>
+	    </div>
+		</form>
+  <div>
+</div>

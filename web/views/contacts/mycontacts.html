@@ -1,0 +1,13 @@
+<div class="alert alert-success" role="alert" ng-if="notification">{{notification}}</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Contacts
+  	  <a href="#/contacts" class="btn btn-default btn-xs pull-right">Contacts</a>
+  </div>
+	<ul class="list-group">
+		<a class="list-group-item" ng-repeat="contact in contacts" href="#/conversations/{{contact.conversationId}}">{{contact.contactee.email}} 
+			<button class="btn btn-default btn-xs pull-right" ng-click="removeFromMyContacts(contact)">Remove From My Contacts
+				<span class="glyphicon glyphicon-minus"></span>
+			</button>		
+		</a>	
+	</ul>
+</div>

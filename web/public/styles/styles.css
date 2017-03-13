@@ -1,0 +1,27 @@
+.conversation-div{
+	min-height: 200px;
+	max-height: 200px;
+	overflow-y: auto;
+	//padding: 5px;
+}
+
+.message-div{
+	margin: 5px;
+	clear: right;
+}
+.message-span{
+	border-radius: 5px;	
+	padding: 3px 10px;
+}
+
+#message-input{
+ resize: none;
+}
+
+.my-message{
+	background: #5bc0de;
+}
+
+.not-my-message{
+	background: #5cb85c;	
+} 

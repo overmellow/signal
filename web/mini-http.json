@@ -1,0 +1,6 @@
+{
+"port": 2000,
+"startingMsg": "server started at port %s ",
+"slash": "index.html",
+"log": false
+}
