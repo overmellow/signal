@@ -1,10 +1,10 @@
 angular.module('myApp')
 	.controller('conversationsCtrl', function($scope, $location, LSFactory, $http, configuration, $rootScope, ContactFactory){
 
-		$rootScope.socket.on('socketid', function(socketid){
+		/*$rootScope.socket.on('socketid', function(socketid){
 			console.log('socketid : ' + socketid)
 			LSFactory.setData('socketid', socketid, true);
-		})
+		})*/
 
 		/*ContactFactory.getMyContacts()
 			.then(function(res){

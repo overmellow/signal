@@ -4,30 +4,62 @@ var router = express.Router();
 var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var config = require('../config'); // get our config file
 
+var codeAuth = require('code-auth');
+
 var User = require('../models/user');
 
 router
-.post('/login', function(req, res) {
+.post('/signin/phone', function(req, res) {
 
-  // find the user
   User.findOne({
-    email: req.body.email
+    phone: req.body.phone
   }, function(err, user) {
-
     if (err) throw err;
 
-    if (!user) {
-      res.status(401).send('Authentication failed. User not found.');
-      //res.json({ success: false, message: 'Authentication failed. User not found.' });
-    } else if (user) {
+    var authCode = Math.floor((Math.random() * 10000) + 1);  
 
-      // check if password matches
-      if (user.password != req.body.password) {
-        //res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-        res.status(401).send('Authentication failed. Wrong password.');
-      } else {
+    if (user) {
+      user.auth.authCode = authCode;
+      user.auth.confirmed = false;
 
-        // if user is found and password is right
+      user.save(function(err) {
+        if (err) throw err;
+        res.json({ success: true });
+      });
+    }    
+    else {
+      var newUser = new User({
+        phone: req.body.phone,
+        //name: req.body.name,
+        auth: {
+          authCode : authCode,
+          confirmed : false
+        }
+      });
+
+      newUser.save(function(err) {
+        if (err) throw err;
+        res.json({ success: true });
+      });
+    }
+
+    codeAuth.sendAuthCode(authCode, 'email');
+  });
+})
+
+.post('/signin', function(req, res) {
+
+  User.findOne({
+    phone: req.body.phone
+  }, function(err, user) {
+    if (err) throw err;
+
+    if(user.auth.authCode == req.body.authCode){
+      user.auth.confirmed = true;
+      user.save(function(err) {
+        if (err) throw err;
+        
+        // if user is found and authCode is right
         // create a token
         var token = jwt.sign(user, config.secret, {
           //expiresIn: 1440, // expires in 24 hours
@@ -37,34 +69,13 @@ router
         res.json({
           success: true,
           token: token,
-          user: {id: user._id, email: user.email, name: user.name, token: token}
+          user: {id: user._id, token: token}
         });
-      }   
-    }
-  });
-})
-.post('/signup', function(req, res) {
 
-  User.findOne({
-    email: req.body.email
-  }, function(err, user) {
-    if (err) throw err;
-
-    if (user) {
-      	res.json({ success: false, message: 'User exist!' });
-    }
-    else {
-	  	var newUser = new User({
-		  	email: req.body.email,
-		  	password: req.body.password,
-        name: req.body.name
-	  	});
-
-  		newUser.save(function(err) {
-  			if (err) throw err;
-  			res.json({ success: true });
-  		});
-    }
+      });
+    } else{
+      res.status(401).send('Authentication failed. Wrong authCode.');
+    }   
   });
 })
 

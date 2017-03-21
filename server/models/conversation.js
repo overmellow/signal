@@ -13,6 +13,6 @@ module.exports = mongoose.model('Conversation', new Schema({
 	messages: [messageSchema],
 	conversationPartners: [{
 		type: Schema.Types.ObjectId, ref: 'User'
-	}],	
+	}],
 	date: { type: Date, default: Date.now },
 }));

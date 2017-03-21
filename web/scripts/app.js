@@ -1,5 +1,5 @@
-angular.module('myApp', ["ngRoute"])
-.config(function($routeProvider) {
+angular.module('myApp', ['ui.router'])
+/*.config(function($routeProvider) {
 	$routeProvider
 	.when("/login", {
 		templateUrl : "views/auth/login.html",
@@ -13,7 +13,7 @@ angular.module('myApp', ["ngRoute"])
 		template : " ",
 		controller : 'logoutCtrl'
 	})		    		    	    
-	/*.when("/contacts/mycontacts", {
+	.when("/contacts/mycontacts", {
 		templateUrl : "views/contacts/mycontacts.html",
 		controller : 'myContactsCtrl'
 	})               
@@ -24,7 +24,7 @@ angular.module('myApp', ["ngRoute"])
 	.when("/profile", {
 		templateUrl : "views/auth/profile.html",
 		controller : 'profileCtrl'
-	})*/  
+	})  
 	.when("/conversations/:conversationId", {
 		templateUrl : "views/conversations/conversation.html",
 		controller : 'conversationCtrl'
@@ -34,20 +34,54 @@ angular.module('myApp', ["ngRoute"])
 		controller : 'conversationsCtrl'
 	})    		    
 	.otherwise("/conversations");
+})*/
+.config(function($stateProvider, $urlRouterProvider) {   
+  $stateProvider
+	.state("signin", {
+    url: '/signin',		
+		templateUrl : "views/auth/signin.html",
+		controller : 'signinCtrl'
+	})
+	.state('signin.phone', {
+    url: '/phone',		
+		templateUrl : 'views/auth/phone.html',
+	})
+	.state("signin.authcode", {
+    url: '/authcode',		
+		templateUrl : "views/auth/authcode.html",
+	})
+	.state("logout", {
+    url: '/logout',		
+		template : " ",
+		controller : 'logoutCtrl'
+	})
+	.state("conversations", {
+		url: 'conversations',
+		templateUrl : "views/conversations/conversations.html",
+		controller : 'conversationsCtrl'
+	})  
+  // catch all route
+  // send users to the form page 
+  $urlRouterProvider.otherwise('/conversations');
 })
+
 .run(function ($rootScope, $location, LSFactory, configuration) {
 
-	$rootScope.socket = io.connect(configuration.apiUrl, {
+	/*$rootScope.socket = io.connect(configuration.apiUrl, {
 		//query: 'token=' + LSFactory.getData('token')
-	});
+	});*/
 
   $rootScope.$on('$locationChangeStart', function (event) {
 		var token = LSFactory.getData('token');
-		if (!token && $location.$$path != '/signup') {
+
+		if (!token) {
 
 		//if (token && typeof $rootScope.currentUser === 'undefined') {
 		  //event.preventDefault();
-		  $location.path('/login');
+  		var signinUser = LSFactory.getData('signinUser');
+		  if(!signinUser){
+		  	$location.path('/signin/phone');
+		  } 		  
 		}
 		//console.log($rootScope.user);
   });

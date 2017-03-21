@@ -22,15 +22,12 @@ angular.module('myApp')
 })
 .factory('AuthFactory', function($http, configuration){
 	return {
-		login: function(user){
-			return $http.post(configuration.apiUrl + 'login', user);
+		signinPhone: function(user){
+			return $http.post(configuration.apiUrl + 'signin/phone', user);
 		},
-		signup: function(newUser){
-			return $http.post(configuration.apiUrl + 'signup', newUser);
+		signin: function(user){
+			return $http.post(configuration.apiUrl + 'signin', user);
 		},
-		updateProfile: function(user){
-			return $http.put(configuration.apiUrl + 'users/updateprofile', user);
-		}
 	}	
 })
 .factory('NotificationFactory', function () {
