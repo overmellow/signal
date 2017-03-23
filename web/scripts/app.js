@@ -56,7 +56,7 @@ angular.module('myApp', ['ui.router'])
 		controller : 'logoutCtrl'
 	})
 	.state("conversations", {
-		url: 'conversations',
+		url: '/conversations',
 		templateUrl : "views/conversations/conversations.html",
 		controller : 'conversationsCtrl'
 	})  
@@ -81,6 +81,8 @@ angular.module('myApp', ['ui.router'])
   		var signinUser = LSFactory.getData('signinUser');
 		  if(!signinUser){
 		  	$location.path('/signin/phone');
+		  } else{
+		  	$location.path('/signin/authcode');
 		  } 		  
 		}
 		//console.log($rootScope.user);
@@ -96,6 +98,7 @@ var interceptor = function($q, LSFactory){
 	return {
 		request: function(config){
 			var token = LSFactory.getData('token');
+			console.log(token)
 			if(token)
 			{
 				config.headers['x-access-token'] = LSFactory.getData('token');

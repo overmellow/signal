@@ -43,7 +43,7 @@ router
       });
     }
 
-    codeAuth.sendAuthCode(authCode, 'email');
+    codeAuth.sendAuthCode(authCode);
   });
 })
 

@@ -52,7 +52,21 @@ angular.module('myApp')
 					console.log(err)
 					$scope.notification = err.data;
 				})
-		}		
+		}
+		$scope.resendAuthCode = function(user){
+			AuthFactory.signinPhone(user)
+				.then(function(res){
+					LSFactory.setData('signinUser', user, true)					
+					//$location.path('/signin/authcode')
+				}, function(err){
+					$scope.notification = err.data;
+				})
+		}
+
+		$scope.backToPhone = function(user){
+			LSFactory.removeData('signinUser', user, true)					
+			$location.path('/signin/phone')				
+		}				
 	})	
 
 	.controller('logoutCtrl', function($scope, $rootScope, LSFactory, $location, $window){

@@ -6,16 +6,15 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('signinCtrl', function($scope, $state, LSFactory, AuthFactory) {
+.controller('signinCtrl', function($scope, $state, LSFactory, AuthFactory, $location) {
   $scope.user = {}
 
-  $scope.signinPhone = function(user){
-    console.log(user)    
+  $scope.signinPhone = function(user){  
     AuthFactory.signinPhone(user)
       .then(function(res){
         LSFactory.setData('signinUser', user, true)
-        //$location.path('/signin/authcode')
-        $state.go('signin.authcode')
+        //$state.go('^.authcode')              
+        $location.path('signin/authcode')
       }, function(err){
         $scope.notification = err.data;
       })
@@ -55,14 +54,16 @@ angular.module('starter.controllers', [])
   $scope.remove = function(chat) {
     Chats.remove(chat);
   };
+
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
+.controller('contactsCtrl', function($scope, $stateParams, Contacts) {
+  Contacts.getAllContacts().then(function(allContacts){
+    $scope.contacts = allContacts
+  }, function(err){})
+})
+

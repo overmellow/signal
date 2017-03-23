@@ -5,9 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.factories', 'starter.configuration'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.factories', 'starter.configuration', 'ngCordova'])
 
-.run(function($ionicPlatform, $rootScope, configuration, LSFactory) {
+.run(function($ionicPlatform, $rootScope, configuration, LSFactory, $state, $location) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -21,14 +21,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       StatusBar.styleDefault();
     }
 
-    $rootScope.$on('$stateChangeStart', function (event, next) {
-      var token = LSFactory.getData('token');
-      
-      if (!token /*&& $location.$$path != '/signup'*/) {
+    $rootScope.$on('$stateChangeStart', function (event, next) {      
+      var token = LSFactory.getData('token');        
+      if (!token) {
+        console.log('token')
 
-      //if (token && typeof $rootScope.currentUser === 'undefined') {
-        event.preventDefault();
-        $state.go($state.current, {}, {reload: true});
+        var signinUser = LSFactory.getData('signinUser');
+        if(!signinUser) {
+            $location.path('/signin/phone');
+          } else{
+            $location.path('/signin/authcode');
+        }
       }
     })
 
@@ -71,8 +74,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     templateUrl: 'templates/tabs.html'
   })
 
-  // Each tab has its own nav history stack:
-
   .state('tab.dash', {
     url: '/dash',
     views: {
@@ -101,19 +102,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     })
 
-/*  .state('tab.account', {
-    url: '/account',
+  .state('tab.contacts', {
+    url: '/contacts',
     views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+      'tab-contacts': {
+        templateUrl: 'templates/tab-contacts.html',
+        controller: 'contactsCtrl'
       }
     }
-  })*/;
+  });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/signin/phone');
-  //$urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/tab/dash');
 
 
 })
