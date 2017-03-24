@@ -1,25 +1,44 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope, $state) {
+.controller('DashCtrl', function($scope, $state, LSFactory, $ionicHistory) {
+  if(!LSFactory.getData('token')){
+    $state.transitionTo("signinphone");
+  }
+
+  $scope.data = LSFactory.getData('token'); 
   $scope.logout = function(){
-    $state.go('signin.phone')
+    delete $scope.user;
+    LSFactory.removeData('currentUser');
+    LSFactory.removeData('token');
+    LSFactory.removeData('signinUser');
+
+    $ionicHistory.clearCache().then(function() {
+      $ionicHistory.clearHistory();
+      $ionicHistory.nextViewOptions({ disableBack: true, historyRoot: true });
+      $state.transitionTo("signinphone");
+    })
   }
 })
 
-.controller('signinCtrl', function($scope, $state, LSFactory, AuthFactory, $location) {
+.controller('signinPhoneCtrl', function($scope, $state, LSFactory, AuthFactory, $location) {
   $scope.user = {}
+  //$ionicNavBarDelegate.showBackButton(false);
 
   $scope.signinPhone = function(user){  
     AuthFactory.signinPhone(user)
       .then(function(res){
         LSFactory.setData('signinUser', user, true)
-        //$state.go('^.authcode')              
-        $location.path('signin/authcode')
+        $state.go('signinauthcode')              
       }, function(err){
         $scope.notification = err.data;
       })
   }
-  $scope.signin = function(user){
+})
+
+.controller('signinAuthcodeCtrl', function($scope, $state, LSFactory, AuthFactory, $location) {
+  $scope.user = LSFactory.getData('signinUser', true)
+
+  $scope.signinAuthcode = function(user){
     AuthFactory.signin(user)
       .then(function(res){
         LSFactory.setData('currentUser', res.data.user, true);
@@ -31,14 +50,6 @@ angular.module('starter.controllers', [])
         $scope.notification = err.data;
       })
   }
-})
-
-.controller('logoutCtrl', function($scope, $state, LSFactory){
-  delete $scope.user;
-  LSFactory.removeData('currentUser');
-  LSFactory.removeData('token');
-  LSFactory.removeData('signinUser');
-  $state.go('signin.phone')
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {
@@ -66,4 +77,3 @@ angular.module('starter.controllers', [])
     $scope.contacts = allContacts
   }, function(err){})
 })
-

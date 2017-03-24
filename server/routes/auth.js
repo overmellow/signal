@@ -69,7 +69,7 @@ router
         res.json({
           success: true,
           token: token,
-          user: {id: user._id, token: token}
+          user: {id: user._id, token: token, authcode: user.auth.authcode}
         });
 
       });

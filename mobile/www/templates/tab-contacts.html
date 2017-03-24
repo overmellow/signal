@@ -2,7 +2,7 @@
   <ion-content>
     <ion-list>
       <ion-item class="item-icon-right" ng-repeat="contact in contacts" type="item-text-wrap" href="#/tab/chats/{{chat.id}}">
-        <h2>{{contact.displyNname}}</h2>
+        <h2>{{contact.displayName}}</h2>
         <div ng-repeat="number in contact.phoneNumbers">
           <p>{{ number.value }}</p>
         </div>
