@@ -24,7 +24,7 @@ router
 
       user.save(function(err) {
         if (err) throw err;
-        res.json({ success: true });
+        res.json({ success: true, authcode: authCode });
       });
     }    
     else {
@@ -39,7 +39,7 @@ router
 
       newUser.save(function(err) {
         if (err) throw err;
-        res.json({ success: true });
+        res.json({ success: true, authcode: authCode });
       });
     }
 
@@ -69,7 +69,7 @@ router
         res.json({
           success: true,
           token: token,
-          user: {id: user._id, token: token, authcode: user.auth.authcode}
+          user: {id: user._id, token: token}
         });
 
       });

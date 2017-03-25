@@ -28,6 +28,7 @@ angular.module('starter.controllers', [])
     AuthFactory.signinPhone(user)
       .then(function(res){
         LSFactory.setData('signinUser', user, true)
+        console.log(res.data.authcode)
         $state.go('signinauthcode')              
       }, function(err){
         $scope.notification = err.data;
@@ -74,6 +75,15 @@ angular.module('starter.controllers', [])
 
 .controller('contactsCtrl', function($scope, $stateParams, Contacts) {
   Contacts.getAllContacts().then(function(allContacts){
-    $scope.contacts = allContacts
+    $scope.contacts = cleanPhoneNumbers(allContacts);
   }, function(err){})
 })
+
+function cleanContactsPhoneNumbers(allContacts){
+  for(var i = allContacts.length - 1; i >= 0; i--){
+     for(var j = allContacts[i].phoneNumbers.length - 1; j >= 0; j--){
+      allContacts[i].phoneNumbers[j].value = allContacts[i].phoneNumbers[j].value.replace(/[- )(]/g,'')        
+     } 
+  }
+  return allContacts;  
+}
