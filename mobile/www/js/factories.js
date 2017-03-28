@@ -59,7 +59,7 @@ angular.module('starter.factories', [])
   };
 })
 
-.factory('Contacts', function($cordovaContacts, $ionicPlatform) {
+.factory('Contacts', function($cordovaContacts, $ionicPlatform, $http, configuration) {
   // Might use a resource here that returns a JSON array
   
   return {
@@ -75,5 +75,9 @@ angular.module('starter.factories', [])
       	return allContacts;
     	})
     },
+
+    getContactsAccountsIds: function(contactNumbers){
+      return $http.post(configuration.apiUrl + 'users/getcontactsaccountsids', contactNumbers);
+    }
   }
 })

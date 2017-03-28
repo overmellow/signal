@@ -1,23 +1,25 @@
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, $state, LSFactory, $ionicHistory) {
-  if(!LSFactory.getData('token')){
-    $state.transitionTo("signinphone");
-  }
-
-  $scope.data = LSFactory.getData('token'); 
-  $scope.logout = function(){
-    delete $scope.user;
-    LSFactory.removeData('currentUser');
-    LSFactory.removeData('token');
-    LSFactory.removeData('signinUser');
-
-    $ionicHistory.clearCache().then(function() {
-      $ionicHistory.clearHistory();
-      $ionicHistory.nextViewOptions({ disableBack: true, historyRoot: true });
+  $scope.$on("$ionicView.enter", function(event, data){
+    if(!LSFactory.getData('token')){
       $state.transitionTo("signinphone");
+    }
+
+    $scope.data = LSFactory.getData('token'); 
+    $scope.logout = function(){
+      delete $scope.user;
+      LSFactory.removeData('currentUser');
+      LSFactory.removeData('token');
+      LSFactory.removeData('signinUser');
+
+      $ionicHistory.clearCache().then(function() {
+        $ionicHistory.clearHistory();
+        $ionicHistory.nextViewOptions({ disableBack: true, historyRoot: true });
+        $state.transitionTo("signinphone");
     })
-  }
+    }
+  })
 })
 
 .controller('signinPhoneCtrl', function($scope, $state, LSFactory, AuthFactory, $location) {
@@ -74,16 +76,43 @@ angular.module('starter.controllers', [])
 })
 
 .controller('contactsCtrl', function($scope, $stateParams, Contacts) {
-  Contacts.getAllContacts().then(function(allContacts){
-    $scope.contacts = cleanPhoneNumbers(allContacts);
-  }, function(err){})
+  $scope.$on("$ionicView.enter", function(event, data){
+    Contacts.getAllContacts().then(function(allContacts){
+      
+      var contactsNumbers = cleanContactsPhoneNumbers(allContacts)
+      Contacts.getContactsAccountsIds(contactsNumbers)
+        .then(function(res){
+          addAccountsIdsToContacts(allContacts, res.data)
+          console.log(allContacts)
+        }, function(err){
+          console.log(err)
+        });
+
+      $scope.contacts = allContacts
+    }, function(err){})
+  });
 })
 
 function cleanContactsPhoneNumbers(allContacts){
+  var iteratedContacts = {} 
+  iteratedContacts.list = []       
   for(var i = allContacts.length - 1; i >= 0; i--){
      for(var j = allContacts[i].phoneNumbers.length - 1; j >= 0; j--){
-      allContacts[i].phoneNumbers[j].value = allContacts[i].phoneNumbers[j].value.replace(/[- )(]/g,'')        
+        allContacts[i].phoneNumbers[j].value = allContacts[i].phoneNumbers[j].value.replace(/[- )(]/g,'')
+        iteratedContacts.list.push(allContacts[i].phoneNumbers[j].value);
      } 
   }
-  return allContacts;  
+  return iteratedContacts;  
+}
+
+function addAccountsIdsToContacts(allContacts, phoneNumbersWithAccountsIds){
+  for(var i = allContacts.length - 1; i >= 0; i--){
+     for(var j = allContacts[i].phoneNumbers.length - 1; j >= 0; j--){
+        for(var obj in phoneNumbersWithAccountsIds){
+          if( allContacts[i].phoneNumbers[j].value == phoneNumbersWithAccountsIds[obj].phone){
+            allContacts[i]._id = phoneNumbersWithAccountsIds[obj]._id;
+          }
+        }        
+     } 
+  }
 }
