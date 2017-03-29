@@ -18,4 +18,14 @@ router.post('/getcontactsaccountsids', function(req, res, next) {
   });
 })
 
+/* GET users listing. */
+router.post('/getnumbersfromaccountids', function(req, res, next) {
+  User.find({
+  	userId: { $in: req.body.list }
+  }, '_id phone', function(err, users) {
+    if (err) throw err;
+    	res.json(users)
+  });
+})
+
 module.exports = router;

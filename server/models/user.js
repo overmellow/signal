@@ -8,6 +8,7 @@ var contactSchema = new Schema({
 })
 
 module.exports = mongoose.model('User', new Schema({
+  userId: String,
   phone: String,
   auth: {
     authCode: Number,

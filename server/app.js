@@ -16,6 +16,7 @@ mongoose.connect(config.database); // connect to database
 //var index = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/auth');
+var conversations = require('./routes/conversations');
 
 var app = express();
 
@@ -33,10 +34,44 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//app.use('/', index);
+
 app.use('/', auth);
 
-//app.use('/', index);
+// route middleware to verify a token
+app.use(function(req, res, next) {
+
+  // check header or url parameters or post parameters for token
+  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+  // decode token
+  if (token) {
+
+    // verifies secret and checks exp
+    jwt.verify(token, config.secret, function(err, decoded) {      
+      if (err) {
+        return res.json({ success: false, message: 'Failed to authenticate token.' });    
+      } else {
+        // if everything is good, save to request for use in other routes
+        req.decoded = decoded;  
+        next();
+      }
+    });
+
+  } else {
+
+    // if there is no token
+    // return an error
+    return res.status(403).send({ 
+        success: false, 
+        message: 'No token provided.' 
+    });
+    
+  }
+});
+
 app.use('/users', users);
+app.use('/conversations', conversations);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

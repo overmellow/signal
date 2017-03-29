@@ -1,7 +1,7 @@
 <ion-view view-title="Contacts">
   <ion-content>
     <ion-list>
-      <ion-item class="item-icon-right" ng-repeat="contact in contacts" type="item-text-wrap" href="#/tab/chats/{{chat.id}}">
+      <ion-item class="item-icon-right" ng-repeat="contact in contacts" type="item-text-wrap" href="#/tab/conversations/{{contact._id}}">
         <h2>{{contact.displayName}}</h2>
         <div>
           <p ng-if="contact._id">I`m on signal</p>
