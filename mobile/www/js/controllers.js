@@ -70,24 +70,26 @@ angular.module('starter.controllers', [])
 })
 
 .controller('conversationsCtrl', function($scope, ConversationsFactory, Contacts, LSFactory) {
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
-  ConversationsFactory.getConversations()
+  $scope.$on('$ionicView.enter', function(e) {
+    ConversationsFactory.getConversations()
     .then(function(res){
-      var accountsList = getAccountIdsFromConversations(res.data, LSFactory.getData('currentUser', true).id)
-      Contacts.getNumbersFromAccountsIds(accountsList)
-        .then(function(response){
-          var conversations = response.data;
-          Contacts.getAllContacts().then(function(allContacts){            
-            addNamesToConversations(conversations, allContacts)
-          }, function(err){}) 
-          //$scope.conversations = response.data;
-        }, function(err){
-          //console.log(err)
-        });
+      conversations = res.data
+      userId = LSFactory.getData('currentUser', true).id
+      for(var i = conversations.length - 1; i >= 0 ; i--){
+        for (var j = conversations[i].conversationPartners.length - 1; j >= 0; j--) {
+          if(conversations[i].conversationPartners[j]._id != userId){
+            //conversations[i].conversationPartners.splice(j, 1)
+            conversations[i].phone = conversations[i].conversationPartners[j].phone
+          }
+        }     
+      }
+      Contacts.getAllContacts()
+      .then(function(allContacts){            
+        addNamesToConversations(conversations, allContacts)
+        $scope.conversations = conversations;
+      }, function(err){})
     })
-
+  });
 })
 
 .controller('conversationCtrl', function($scope, LSFactory, $http, configuration, $rootScope, ContactFactory, $stateParams, ConversationFactory, ConversationMessagesFactory){
@@ -161,18 +163,14 @@ function addAccountsIdsToContacts(allContacts, phoneNumbersWithAccountsIds){
 }
 
 function addNamesToConversations(conversations, allContacts){
-  console.log(conversations)
-  console.log(allContacts)
+  cleanContactsPhoneNumbers(allContacts)
   for(var i = conversations.length -1; i >= 0; i--){
     for (var j = allContacts.length - 1; j >= 0; j--) {
       for(var x in allContacts[j].phoneNumbers){
-        console.log(conversations[i].phone)
-        console.log(allContacts[j].phoneNumbers[x])
-        if(conversations[i].phone == allContacts[j].phoneNumbers[x]){
+        if(conversations[i].phone == allContacts[j].phoneNumbers[x].value){
           conversations[i].name = allContacts[j].displayName;
         }
-      }
-      allCjntacts[j]
+      }     
     }
   }
 }

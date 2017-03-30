@@ -21,7 +21,6 @@ router
   .exec(function(err, users){
 	  if (err) return handleError(err);
   	for(var x in users){
-  		console.log(users[x])
   		users[x].userId = users[x]._id;
   		users[x].save(function(err){
   			if(err) return handleError(err)
@@ -34,10 +33,9 @@ router
 // get specific contacts of specified user by userId
 .get('/', function(req, res) {
   User.findById(req.decoded._doc._id)
-  .populate({path: 'conversations'})
+  .populate({path: 'conversations', populate: {path: 'conversationPartners', model: 'User', select: 'phone'}})
   .exec(function(err, user){
 	  if (err) return handleError(err);
-	  console.log(user.conversations)
   	res.json(user.conversations);
   })
 })

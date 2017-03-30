@@ -16,7 +16,8 @@ module.exports = mongoose.model('User', new Schema({
   },
   name: String,
   conversations: [{
-  	type: Schema.Types.ObjectId, ref: 'Conversation'
+  	//type: String, ref: 'Conversation'
+    type: Schema.Types.ObjectId, ref: 'Conversation'
   }],
   contacts:[/*contactSchema*/]
 }));
