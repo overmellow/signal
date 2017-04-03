@@ -10,11 +10,66 @@ angular.module('starter.factories', [])
 	}	
 })
 
-.factory('Contacts', function($cordovaContacts, $ionicPlatform, $http, configuration) {
-  // Might use a resource here that returns a JSON array
-  
+.factory('Contacts', function($cordovaContacts, $ionicPlatform, $http, configuration, $q) {
+  var phonecontacts = [
+    {
+      _id: "58d5b11f126dc1357b4ecb83",
+      displayName: "jeff",
+      phoneNumbers: [
+        {
+          value: "+18110009999"
+        }
+      ]
+    },
+    {
+      displayName: "john",
+      phoneNumbers: [
+        {
+          value: "+14151112222"
+        }
+      ]
+    },
+    {
+      displayName: "Gajotres",
+      phoneNumbers: [
+        {
+          value: "+385959052082"
+        },
+        {
+          value: "+385914600731"
+        }
+      ]
+    },
+    {
+      _id: "58d5ae1167961d351728b490",
+      displayName: "Morteza",
+      phoneNumbers: [
+        {
+          value: "+18103940029"
+        }
+      ]
+    },
+    {
+      _id: "58dae83c283b672a9c5181b7",
+      displayName: "Josef",
+      phoneNumbers: [
+        {
+          value: "+18888888888"
+        }
+      ]      
+    }              
+  ]
   return {
     getAllContacts: function() {
+      var deferred = $q.defer();
+      setTimeout(function() {    
+        deferred.resolve(phonecontacts);
+      }, 100);
+
+      return deferred.promise;
+    },
+
+    /*getAllContacts: function() {
       var opts = {
 				filter      : '',
 				multiple    : true,
@@ -25,7 +80,7 @@ angular.module('starter.factories', [])
       return $cordovaContacts.find(opts).then(function(allContacts) {
       	return allContacts;
     	})
-    },
+    },*/
 
     getContactsAccountsIds: function(contactNumbers){
       return $http.post(configuration.apiUrl + 'users/getcontactsaccountsids', contactNumbers);
@@ -42,15 +97,28 @@ angular.module('starter.factories', [])
     getConversations: function(){
       return $http.get(apiUrl);
     },
-/*    addToConversations: function(contact){
-      return $http.put(apiUrl + '/addtomycontacts/' + contact._id);
+    getConversation: function(conversationId){
+      return $http.get(apiUrl + '/conversation/' + conversationId);
     },
-    removeFromConversations: function(contact){
-      return $http.delete(apiUrl + '/removefrommycontacts/' + contact.contactee._id + '/' + contact._id + '/' + contact.conversationId);
-      //return $http.delete(apiUrl + '/removefrommycontacts/' + contact.contactee._id + '/' + contact._id);
+    getConversationWithContactId: function(contactId){
+      return $http.get(apiUrl + '/contact/' + contactId);
     },
-    getContactByConversationId: function(conversationId){
-      return $http.get(apiUrl + '/mycontacts/' + conversationId);
-    }*/
+    removeFromConversations: function(conversationId){
+      return $http.delete(apiUrl + '/' + conversationId);
+    },  
+  } 
+})
+
+.factory('ConversationsSocketFactory', function($rootScope){
+  return {
+    joinRoom: function(conversationId){
+      return $rootScope.socket.emit('join', conversationId);
+    },
+    leaveRoom: function(conversationId){
+      return $rootScope.socket.emit('leave', conversationId);
+    },    
+    sendMessage: function(newMessage){
+      return $rootScope.socket.emit('message', newMessage);
+    }
   } 
 })

@@ -1,11 +1,12 @@
 <ion-view view-title="Conversations">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="conversation in conversations" type="item-text-wrap" href="#/tab/conversations/{{conversation._id}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="conversation in conversations" type="item-text-wrap" href="#/tab/conversations/{{conversation._id}}/conversation">
         <h2>{{conversation.name || conversation.phone}}</h2>
+        <p>{{conversation.phone}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
 
-        <ion-option-button class="button-assertive" ng-click="removeFromConversations(conversation)">
+        <ion-option-button class="button-assertive" ng-click="remove(conversation)">
           Remove
         </ion-option-button>
       </ion-item>

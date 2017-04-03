@@ -21,6 +21,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       StatusBar.styleDefault();
     }
 
+    $rootScope.socket = io.connect(configuration.apiUrl, {
+    //query: 'token=' + LSFactory.getData('token')
+    });
+
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {      
       var token = LSFactory.getData('token');        
       if (!token) {
@@ -47,6 +51,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     url: '/authcode',
     templateUrl: 'templates/auth/authcode.html',
     controller: "signinAuthcodeCtrl"
+  })
+  .state('invite', {
+    url: '/invite',
+    templateUrl: 'templates/invite.html',
+    controller: "inviteCtrl"
   })
   .state('tab', {
     url: '/tab',
@@ -90,7 +99,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     })
   .state('tab.conversation-detail', {
-    url: '/conversations/:contactId',
+    url: '/conversations/:conversationId/:contact',
     views: {
       'tab-conversations': {
         templateUrl: 'templates/conversation-detail.html',
@@ -115,6 +124,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     $httpProvider.interceptors.push(interceptor);
 })
 //.constant('apiUrl', 'http://192.168.74.131:3000/')
+
+//angular.module('app.directives', []);
+/*.directive('hideTabs', function($rootScope) {
+  return {
+      restrict: 'A',
+      link: function($scope, $el) {
+          $rootScope.hideTabs = 'tabs-item-hide';
+          $scope.$on('$destroy', function() {
+              $rootScope.hideTabs = '';
+          });
+      }
+  };
+})*/
 
 var interceptor = function($q, LSFactory){  
   return {

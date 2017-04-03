@@ -8,6 +8,9 @@ var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
 
+var User = require('../models/user');
+var Conversation = require('../models/conversation');
+
 /**
  * Get port from environment and store in Express.
  */
@@ -20,6 +23,41 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+var io = require('socket.io')(server)
+
+io.on('connection', function(socket){
+  //console.log(io.sockets.sockets)
+  console.log('a user connected');
+  //socket.emit('connection', 'a user connected');
+
+  socket.on('join', function (room) {
+    //console.log('a user connected to room:' + room)
+    /*User.find({'contacts.conversationId': room}, '_id', function(err, users){
+      if (err) return handleError(err);
+    })*/
+
+    socket.join(room);
+  });
+
+  socket.on('leave', function (room) {
+    //console.log('a user left room:' + room)
+    socket.leave(room);
+  });
+
+  socket.on('message', function(msg){
+    //console.log('message: ' + msg.message);
+    io.in(msg.room).emit('message', msg);
+
+    Conversation.findById(msg.room, function(err, conversation){
+      if (err) return handleError(err)
+      conversation.messages.push({senderId: msg.senderId, messageType: 'text', message: msg.message, url: ''});
+      conversation.save(function(err){
+        if(err) return handleError(err)
+      })
+    })
+  });  
+});
 
 /**
  * Listen on provided port, on all network interfaces.

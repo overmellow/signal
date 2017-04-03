@@ -1,1 +1,22 @@
 /* Empty. Add your own CSS if you like */
+
+.pull-right{
+	float: right!important;
+}
+
+.message-div{
+	margin: 5px;
+	clear: right;
+}
+.message-span{
+	border-radius: 5px;	
+	padding: 3px 10px;
+}
+
+.my-message{
+	background: #5bc0de;
+}
+
+.not-my-message{
+	background: #5cb85c;	
+} 
