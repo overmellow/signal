@@ -34,10 +34,19 @@ router
 .get('/contact/:contactId', function(req, res){
 	getConversation(req.decoded._doc._id, req.params.contactId/*, createConversation*/)
 	.then(function(conversation){
-		console.log('callback 0')
-		console.log(conversation)
+		console.log('callback 10')
+		//console.log(conversation)
     if(conversation != null && conversation != undefined){
+    	console.log('callback 11')
       res.json(conversation);  
+    } else {
+    	console.log('callback 12')
+    	createConversation(req.decoded._doc._id, req.params.contactId, res)
+    	.then(function(conversation){
+    		console.log('callback 13')
+    		console.log(conversation)
+    		res.json(conversation)
+    	})	
     }
 	})	
 })
@@ -81,7 +90,7 @@ var getConversation = function(userId, contactId, callback){
   	console.log('callback 1.1')
 		if(conversation != null && conversation != undefined){
 			console.log('callback 1.2')
-			console.log(conversation)
+			//console.log(conversation)
 			return conversation
 		} else {
 			console.log('callback 2')
@@ -96,20 +105,26 @@ var getConversation = function(userId, contactId, callback){
 	})
 }
 
-var createConversation = function(userId, contactId){
-	console.log('callback 4')
+var createConversation = function(userId, contactId, res){
+	console.log('callback 5')
 	var newConversation = new Conversation({conversationPartners: [userId, contactId]});
+	newConversation.messages = []
 	newConversation.save(function(err, conversation){
+		console.log('callback 6')
 		User.findById(userId, function(err, user){
 			if(err) res.send(err)
 			user.conversations.push(conversation)	
 			user.save(function(err){
+				console.log('callback 7')
 				User.findById(contactId, function(err, contact){
 					//if(err) res.send(err)
 					contact.conversations.push(conversation)
-	        contact.save(function(err){
+	        return contact.save(function(err){
+	        	console.log('callback 8')
 	          //res.json({ success: true, message: 'Conversation is saved successfully!' });
-	          return conversation;
+	          console.log(conversation)
+	          res.json(conversation)
+	          //return conversation;
 	        })						
 				})			
 			})

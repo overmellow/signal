@@ -1,0 +1,26 @@
+<ion-view view-title="Contacts">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-icon-right" ng-repeat="contact in contacts" type="item-text-wrap" ng-href="{{contact._id ? '#/conversations/' + contact._id + '/contact' : '#/invite'}}">
+        <h2>{{contact.displayName}}</h2>
+        <div>
+          <p ng-if="contact._id">I`m on signal</p>
+          <p>{{contact.phoneNumbers[0].value}}</p>
+        </div>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+  <div class="tabs tabs-icon-only">
+    <a class="tab-item" ui-sref="dash">
+      <i class="icon ion-ios-gear-outline"></i>
+    </a>
+    <a class="tab-item" ui-sref="conversations">
+      <i class="icon ion-ios-chatboxes-outline"></i>
+    </a>
+    <a class="tab-item" ui-sref="contacts">
+      <i class="icon ion-ios-people"></i>
+    </a>
+  </div> 
+</ion-view>
+

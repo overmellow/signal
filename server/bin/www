@@ -48,13 +48,15 @@ io.on('connection', function(socket){
   socket.on('message', function(msg){
     //console.log('message: ' + msg.message);
     io.in(msg.room).emit('message', msg);
-
+    console.log(msg)
     Conversation.findById(msg.room, function(err, conversation){
       if (err) return handleError(err)
-      conversation.messages.push({senderId: msg.senderId, messageType: 'text', message: msg.message, url: ''});
-      conversation.save(function(err){
-        if(err) return handleError(err)
-      })
+        
+        console.log(conversation)
+        conversation.messages.push({senderId: msg.senderId, messageType: 'text', message: msg.message, url: ''});
+        conversation.save(function(err){
+          if(err) return handleError(err)
+        })
     })
   });  
 });

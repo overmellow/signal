@@ -57,67 +57,49 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     templateUrl: 'templates/invite.html',
     controller: "inviteCtrl"
   })
-  .state('tab', {
+  /*.state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html'
-  })
-  .state('tab.dash', {
+  })*/
+  .state('dash', {
     url: '/dash',
-    views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
+    /*views: {
+      'tab-dash': {*/
+        templateUrl: 'templates/dash.html',
         controller: 'DashCtrl',
-      }
-    }
+      /*}
+    }*/
   })
-  .state('tab.chats', {
-      url: '/chats',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
-        }
-      }
-    })
-  .state('tab.chat-detail', {
-    url: '/chats/:chatId',
-    views: {
-      'tab-chats': {
-        templateUrl: 'templates/chat-detail.html',
-        controller: 'ChatDetailCtrl'
-      }
-    }
-  })
-  .state('tab.conversations', {
+  .state('conversations', {
       url: '/conversations',
-      views: {
-        'tab-conversations': {
-          templateUrl: 'templates/tab-conversations.html',
+      /*views: {
+        'tab-conversations': {*/
+          templateUrl: 'templates/conversations.html',
           controller: 'conversationsCtrl'
-        }
-      }
+        /*}
+      }*/
     })
-  .state('tab.conversation-detail', {
+  .state('conversation-detail', {
     url: '/conversations/:conversationId/:contact',
-    views: {
-      'tab-conversations': {
-        templateUrl: 'templates/conversation-detail.html',
+    /*views: {
+      'tab-conversations': {*/
+        templateUrl: 'templates/conversation.html',
         controller: 'conversationCtrl'
-      }
-    }
+      /*}
+    }*/
   })
-  .state('tab.contacts', {
+  .state('contacts', {
     url: '/contacts',
-    views: {
-      'tab-contacts': {
-        templateUrl: 'templates/tab-contacts.html',
+    /*views: {
+      'tab-contacts': {*/
+        templateUrl: 'templates/contacts.html',
         controller: 'contactsCtrl'
-      }
-    }
+      /*}
+    }*/
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/dash');
 })
 
 .config(function($httpProvider) {
@@ -126,17 +108,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 //.constant('apiUrl', 'http://192.168.74.131:3000/')
 
 //angular.module('app.directives', []);
-/*.directive('hideTabs', function($rootScope) {
+.directive('hideTabs', function($rootScope) {
   return {
-      restrict: 'A',
-      link: function($scope, $el) {
-          $rootScope.hideTabs = 'tabs-item-hide';
-          $scope.$on('$destroy', function() {
-              $rootScope.hideTabs = '';
-          });
-      }
+    restrict: 'A',
+    link: function($scope, $el) {
+      $rootScope.hideTabs = 'tabs-item-hide';
+      $scope.$on('$destroy', function() {
+          $rootScope.hideTabs = '';
+      });
+    }
   };
-})*/
+})
 
 var interceptor = function($q, LSFactory){  
   return {

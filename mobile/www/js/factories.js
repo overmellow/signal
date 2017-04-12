@@ -13,7 +13,7 @@ angular.module('starter.factories', [])
 .factory('Contacts', function($cordovaContacts, $ionicPlatform, $http, configuration, $q) {
   var phonecontacts = [
     {
-      _id: "58d5b11f126dc1357b4ecb83",
+      //_id: "58d5b11f126dc1357b4ecb83",
       displayName: "jeff",
       phoneNumbers: [
         {
@@ -41,7 +41,7 @@ angular.module('starter.factories', [])
       ]
     },
     {
-      _id: "58d5ae1167961d351728b490",
+      //_id: "58d5ae1167961d351728b490",
       displayName: "Morteza",
       phoneNumbers: [
         {
@@ -50,7 +50,7 @@ angular.module('starter.factories', [])
       ]
     },
     {
-      _id: "58dae83c283b672a9c5181b7",
+      //_id: "58dae83c283b672a9c5181b7",
       displayName: "Josef",
       phoneNumbers: [
         {
@@ -122,3 +122,29 @@ angular.module('starter.factories', [])
     }
   } 
 })
+/*
+.factory('ConversationsSocketFactory', function($rootScope, configuration){
+  var socket = io.connect(configuration.apiUrl, {
+    //query: 'token=' + LSFactory.getData('token')
+    });
+  return {
+    joinRoom: function(conversationId){
+      return socket.emit('join', conversationId);
+    },
+    leaveRoom: function(conversationId){
+      return socket.emit('leave', conversationId);
+    },    
+    sendMessage: function(newMessage){
+      return socket.emit('message', newMessage);
+    },
+    on: function(eventName, callback){
+      socket.on(eventName, function () {  
+        var args = arguments;
+        $rootScope.$apply(function () {
+          callback.apply(socket, args);
+        });
+      });
+    }
+  } 
+})
+*/

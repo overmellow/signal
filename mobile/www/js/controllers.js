@@ -6,6 +6,7 @@ angular.module('starter.controllers', [])
       $state.transitionTo("signinphone");
     }
 
+
     $scope.data = LSFactory.getData('token'); 
     $scope.myuser = LSFactory.getData('currentUser', true)    
 
@@ -48,7 +49,7 @@ angular.module('starter.controllers', [])
         LSFactory.setData('currentUser', res.data.user, true);
         LSFactory.setData('token', res.data.token);
         LSFactory.removeData('signinUser')
-        $state.go('tab.chats')
+        $state.go('conversations')
       }, function(err){
         $scope.notification = err.data;
       })
@@ -57,17 +58,20 @@ angular.module('starter.controllers', [])
 
 .controller('inviteCtrl', function($scope, $state) { 
   $scope.back = function(){
-    $state.transitionTo("tab.contacts");    
+    $state.transitionTo("contacts");    
   }
 })
 
-.controller('contactsCtrl', function($scope, $stateParams, Contacts) {
+.controller('contactsCtrl', function($scope, $stateParams, Contacts, $rootScope, $ionicNavBarDelegate) {
   $scope.$on("$ionicView.enter", function(event, data){
+    $ionicNavBarDelegate.showBackButton(false);
+    //$rootScope.hideTabs = '';
     Contacts.getAllContacts().then(function(allContacts){
 
       var contactsNumbers = cleanContactsPhoneNumbers(allContacts)
       Contacts.getContactsAccountsIds(contactsNumbers)
         .then(function(res){
+          //console.log(res.data)
           addAccountsIdsToContacts(allContacts, res.data)
         }, function(err){
           console.log(err)
@@ -78,12 +82,13 @@ angular.module('starter.controllers', [])
   });
 })
 
-.controller('conversationsCtrl', function($scope, ConversationsFactory, Contacts, LSFactory, $ionicModal) {
+.controller('conversationsCtrl', function($scope, ConversationsFactory, Contacts, LSFactory, $ionicModal, $ionicNavBarDelegate) {
   $scope.$on('$ionicView.enter', function(e) {
+    $ionicNavBarDelegate.showBackButton(false);
     ConversationsFactory.getConversations()
     .then(function(res){
       conversations = res.data
-      console.log(conversations)
+      //console.log(conversations)
       userId = LSFactory.getData('currentUser', true).id
       for(var i = conversations.length - 1; i >= 0 ; i--){
         for (var j = conversations[i].conversationPartners.length - 1; j >= 0; j--) {
@@ -111,60 +116,66 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('conversationCtrl', function($scope, LSFactory, $http, configuration, $rootScope, $stateParams, ConversationsSocketFactory, ConversationsFactory){
+.controller('conversationCtrl', function($scope, LSFactory, $http, configuration, $rootScope, $stateParams, ConversationsSocketFactory, ConversationsFactory, $ionicHistory, $ionicNavBarDelegate){
   $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-  viewData.enableBack = true;
-  if($stateParams.contact == 'contact'){
-    console.log('contact')
-    ConversationsFactory.getConversationWithContactId($stateParams.conversationId)
-    .then(function(res){
-      $scope.conversation = res.data;
-    })
-  }
-  else if($stateParams.contact == 'conversation'){
-    console.log('conversation')
-    ConversationsFactory.getConversation($stateParams.conversationId)
-    .then(function(res){
-      $scope.conversation = res.data;
-      $scope.$watch("messages", function(){
-        //$('.conversation-div').scrollTop($('.conversation-div').height())
-        //$("#message-input").focus();
+    $ionicNavBarDelegate.showBackButton(true);
+    if($stateParams.contact == 'contact'){
+      ConversationsFactory.getConversationWithContactId($stateParams.conversationId)
+      .then(function(res){
+        $scope.conversation = res.data;
+
+        ConversationsSocketFactory.joinRoom($scope.conversation._id);
+
+        $scope.newMessage = {message: '', room: $scope.conversation._id, senderId: LSFactory.getData('currentUser', true).id}
+        console.log($scope.newMessage)
       })
-    })    
-  }
+    }
+    else if($stateParams.contact == 'conversation'){
+      ConversationsFactory.getConversation($stateParams.conversationId)
+      .then(function(res){
+        $scope.conversation = res.data;
 
-  $scope.user = LSFactory.getData('currentUser', true)
-  $scope.messages = []    
+        ConversationsSocketFactory.joinRoom($scope.conversation._id);
+        $scope.newMessage = {message: '', room: $scope.conversation._id, senderId: LSFactory.getData('currentUser', true).id}
+        console.log($scope.newMessage)
+      })    
+    }
 
-  /*ContactFactory.getContactByConversationId($stateParams.conversationId)
-    .then(function(res){
-      $scope.contact = res.data;
-    })*/
+    $scope.$watch("messages", function(){
+      //$('.conversation-div').scrollTop($('.conversation-div').height())
+      //$("#message-input").focus();
+    })
 
-  ConversationsSocketFactory.joinRoom($stateParams.conversationId);
+    $scope.user = LSFactory.getData('currentUser', true)
+    $scope.messages = []
 
-  $scope.newMessage = {message: '', room: $stateParams.conversationId, senderId: LSFactory.getData('currentUser', true).id}
-  
-  $scope.sendMessage = function(newMessage){
-    ConversationsSocketFactory.sendMessage(newMessage);
-    //$rootScope.socket.emit('message', newMessage);
-    $scope.newMessage.message = '';
-    //$('.conversation-div').scrollTop($('.conversation-div').height())
-    //$("#message-input").focus();  
-  }
+    /*console.log(conversation)    
 
-  $scope.back = function(){
-    ConversationSocektFactory.leaveRoom($stateParams.conversationId);
-    //$rootScope.socket.emit('leave', $stateParams.conversationId);
-    //$location.path('/conversations');
-  } 
+    ConversationsSocketFactory.joinRoom(conversation._id);
 
-  $rootScope.socket.on('message', function(msg){
-    $scope.$apply(function(){
-      $scope.messages.push(msg)
-    })    
+    $scope.newMessage = {message: '', room: conversation._id, senderId: LSFactory.getData('currentUser', true).id}*/
+    
+    $scope.sendMessage = function(newMessage){
+      ConversationsSocketFactory.sendMessage(newMessage);
+      //$rootScope.socket.emit('message', newMessage);
+      $scope.newMessage.message = '';
+      //$('.conversation-div').scrollTop($('.conversation-div').height())
+      //$("#message-input").focus();  
+    }
+
+    $scope.back = function(){
+      ConversationSocektFactory.leaveRoom($stateParams.conversationId);
+      console.log('back')
+      //$rootScope.socket.emit('leave', $stateParams.conversationId);
+      //$location.path('/conversations');
+    } 
+
+    $rootScope.socket.on('message', function(msg){
+      $scope.$apply(function(){
+        $scope.conversation.messages.push(msg)
+      })    
+    })
   })
-})
 })
 
 function cleanContactsPhoneNumbers(allContacts){
