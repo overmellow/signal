@@ -1,14 +1,13 @@
 <ion-view view-title="Phone" name="signinphone">
-  	<br><br>
+   <ion-content scroll="false">  
 		<form id="signin-form" ng-submit="signinPhone(user)">
-
 			<div class="list">
 			  <label class="item item-input">
-			    <input type="text" placeholder="Phone" ng-model="user.phone">
+			    <input type="text" autofocus="true" placeholder="Phone" ng-model="user.phone" focus-me>
 			  </label>
 			</div>
 			<button type="submit" class="button button-full button-positive">Next</button>
-
 		</form>
+  </ion-content> 
 </ion-view>
 

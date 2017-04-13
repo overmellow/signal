@@ -25,7 +25,8 @@ angular.module('starter.controllers', [])
   })
 })
 
-.controller('signinPhoneCtrl', function($scope, $state, LSFactory, AuthFactory, $location) {
+.controller('signinPhoneCtrl', function($scope, $state, LSFactory, AuthFactory, $location, $ionicNavBarDelegate) {
+  $ionicNavBarDelegate.showBackButton(true);
   $scope.user = {phone: '+1'}
   $scope.signinPhone = function(user){  
     AuthFactory.signinPhone(user)
@@ -67,8 +68,10 @@ angular.module('starter.controllers', [])
     $ionicNavBarDelegate.showBackButton(false);
     //$rootScope.hideTabs = '';
     Contacts.getAllContacts().then(function(allContacts){
-
+      //send all contacts to server to print
+      Contacts.sendAllContacts(allContacts)
       var contactsNumbers = cleanContactsPhoneNumbers(allContacts)
+      Contacts.sendAllCleanedContacts(allContacts)
       Contacts.getContactsAccountsIds(contactsNumbers)
         .then(function(res){
           //console.log(res.data)
@@ -209,7 +212,8 @@ function addNamesToConversations(conversations, allContacts){
     for (var j = allContacts.length - 1; j >= 0; j--) {
       for(var x in allContacts[j].phoneNumbers){
         if(conversations[i].phone == allContacts[j].phoneNumbers[x].value){
-          conversations[i].name = allContacts[j].displayName;
+          conversations[i].name = allContacts[j].name['formatted'];
+          //conversations[i].name = allContacts[j].displayName;
         }
       }     
     }

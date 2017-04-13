@@ -15,6 +15,7 @@ angular.module('starter.factories', [])
     {
       //_id: "58d5b11f126dc1357b4ecb83",
       displayName: "jeff",
+      name: {formatted: 'jeff'},
       phoneNumbers: [
         {
           value: "+18110009999"
@@ -23,6 +24,7 @@ angular.module('starter.factories', [])
     },
     {
       displayName: "john",
+      name: {formatted: 'john'},
       phoneNumbers: [
         {
           value: "+14151112222"
@@ -31,6 +33,7 @@ angular.module('starter.factories', [])
     },
     {
       displayName: "Gajotres",
+      name: {formatted: 'Gajotres'},
       phoneNumbers: [
         {
           value: "+385959052082"
@@ -43,6 +46,7 @@ angular.module('starter.factories', [])
     {
       //_id: "58d5ae1167961d351728b490",
       displayName: "Morteza",
+      name: {formatted: 'Morteza Faraji'},
       phoneNumbers: [
         {
           value: "+18103940029"
@@ -52,6 +56,7 @@ angular.module('starter.factories', [])
     {
       //_id: "58dae83c283b672a9c5181b7",
       displayName: "Josef",
+      name: {formatted: 'Josef'},
       phoneNumbers: [
         {
           value: "+18888888888"
@@ -60,33 +65,39 @@ angular.module('starter.factories', [])
     }              
   ]
   return {
-    getAllContacts: function() {
+/*    getAllContacts: function() {
       var deferred = $q.defer();
       setTimeout(function() {    
         deferred.resolve(phonecontacts);
       }, 100);
 
       return deferred.promise;
-    },
+    },*/
 
-    /*getAllContacts: function() {
+    getAllContacts: function() {
       var opts = {
 				filter      : '',
 				multiple    : true,
-				fields      : ['displayName'],
+				fields      : ['displayName', 'name'],
 				hasPhoneNumber: true,
       };
 
       return $cordovaContacts.find(opts).then(function(allContacts) {
       	return allContacts;
     	})
-    },*/
+    },
 
     getContactsAccountsIds: function(contactNumbers){
       return $http.post(configuration.apiUrl + 'users/getcontactsaccountsids', contactNumbers);
     },
     getNumbersFromAccountsIds: function(contactIds){
       return $http.post(configuration.apiUrl + 'users/getnumbersfromaccountids', contactIds);
+    },
+    sendAllContacts: function(allContacts){
+      $http.post(configuration.apiUrl + 'users/sendallcontacts', allContacts);
+    },
+    sendAllCleanedContacts: function(allContacts){
+      $http.post(configuration.apiUrl + 'users/sendallcleanedcontacts', allContacts);
     }
   }
 })

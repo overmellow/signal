@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+var fs = require('fs')
+
 var User = require('../models/user');
 
 /* GET users listing. */
@@ -28,4 +30,29 @@ router.post('/getnumbersfromaccountids', function(req, res, next) {
   });
 })
 
+router.post('/sendallcontacts', function(req, res, next){
+  console.log(req.body)
+  fs.writeFile('public/files/allcontacts.json', JSON.stringify(req.body),  function(err) {
+   if (err) {
+      return console.error(err);
+   }
+   
+   console.log("Data written successfully!");
+   console.log("Let's read newly written data");
+   
+  });
+})
+
+router.post('/sendallcleanedcontacts', function(req, res, next){
+  console.log(req.body)
+  fs.writeFile('public/files/allcleandcontacts.json', JSON.stringify(req.body),  function(err) {
+   if (err) {
+      return console.error(err);
+   }
+   
+   console.log("Data written successfully!");
+   console.log("Let's read newly written data");
+   
+  });
+})
 module.exports = router;

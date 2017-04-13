@@ -120,6 +120,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   };
 })
 
+.directive('focusMe', function($timeout) {
+  return {
+    link: function(scope, element, attrs) {
+
+      $timeout(function() {
+        element[0].focus(); 
+      }, 2000);
+    }
+  };
+})
+
 var interceptor = function($q, LSFactory){  
   return {
     request: function(config){

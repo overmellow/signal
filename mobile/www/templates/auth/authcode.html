@@ -1,11 +1,12 @@
 <ion-view view-title="AuthCode" name="signinauthcode">
-	<br><br>
-	<form id="signin-form" ng-submit="signinAuthcode(user)"> 
-		<div class="list">
-		  <label class="item item-input">
-		    <input type="text" placeholder="authCode" ng-model="user.authCode">
-		  </label>
-		</div>
-		<button type="submit" class="button button-full button-positive">Sign In</button>
-	</form>
+	<ion-content scroll="false">  
+		<form id="signin-form" ng-submit="signinAuthcode(user)"> 
+			<div class="list">
+			  <label class="item item-input">
+			    <input type="text" placeholder="authCode" ng-model="user.authCode" focus-me>
+			  </label>
+			</div>
+			<button type="submit" class="button button-full button-positive">Sign In</button>
+		</form>
+  </ion-content>
 </ion-view>		

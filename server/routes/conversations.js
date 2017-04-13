@@ -66,7 +66,7 @@ router
 		})
 	})
 })
-/*
+
 .get('/copyaccountsids', function(req, res) {
   User.find()
   .exec(function(err, users){
@@ -75,10 +75,11 @@ router
   		users[x].userId = users[x]._id;
   		users[x].save(function(err){
   			if(err) return handleError(err)
+  				res.json({'sucess': 'true'})
   		})
   	} 
   })
-})*/
+})
 
 module.exports = router;
 
@@ -120,8 +121,7 @@ var createConversation = function(userId, contactId, res){
 					//if(err) res.send(err)
 					contact.conversations.push(conversation)
 	        return contact.save(function(err){
-	        	console.log('callback 8')
-	          //res.json({ success: true, message: 'Conversation is saved successfully!' });
+//	        	console.log('callback 8')
 	          console.log(conversation)
 	          res.json(conversation)
 	          //return conversation;

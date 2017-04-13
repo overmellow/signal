@@ -1,7 +1,7 @@
 <ion-view view-title="Conversations">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="conversation in conversations" type="item-text-wrap" ng-href="#/conversations/{{conversation._id}}/conversation">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="conversation in conversations | orderBy:'phone'" type="item-text-wrap" ng-href="#/conversations/{{conversation._id}}/conversation">
         <h2>{{conversation.name || conversation.phone}}</h2>
         <p class="assertive">{{conversation.phone}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
@@ -12,15 +12,19 @@
       </ion-item>
     </ion-list>
   </ion-content>
-  <div class="tabs tabs-icon-only">
-    <a class="tab-item" ui-sref="dash">
-      <i class="icon ion-ios-gear-outline"></i>
-    </a>
-    <a class="tab-item" ui-sref="conversations">
-      <i class="icon ion-ios-chatboxes"></i>
-    </a>
-    <a class="tab-item" ui-sref="contacts">
-      <i class="icon ion-ios-people-outline"></i>
-    </a>
-  </div> 
+
+  <ion-footer-bar>
+    <div class="tabs tabs-icon-only">
+      <a class="tab-item" ui-sref="dash">
+        <i class="icon ion-ios-gear-outline"></i>
+      </a>
+      <a class="tab-item" ui-sref="conversations">
+        <i class="icon ion-ios-chatboxes"></i>
+      </a>
+      <a class="tab-item" ui-sref="contacts">
+        <i class="icon ion-ios-people-outline"></i>
+      </a>
+    </div>
+  </ion-footer-bar>
+
 </ion-view>
